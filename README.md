@@ -29,7 +29,7 @@ For the **arch** argument, which refers to the model architecture, WRN-28-10, WR
 
 The **mode** argument refers to the the filter type. you can choose between none, average, median, gaussian, and average_LOW. Average here means mean filter.
 
-The **pos** argument referes to the filter position. The filter will be attached right after the layer corresponding to the number you select. You can choose between 0~3 for the WRN backbone, and between 0~11 for the ViT backbone.
+The **pos** argument referes to the filter position. The filter will be attached right after the layer corresponding to the number you select. You can choose between 0 to 3 for the WRN backbone, and between 0 to 11 for the ViT backbone.
 
 The **config** argument links to a YAML file containing various parameters required for the experiment. It primarily handles the filter kernel size and learning rate. The number in the config file indicates the filter kernel size.
 
