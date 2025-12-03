@@ -1,0 +1,15 @@
+*.pyc
+*.tar
+*.tar.gz
+*.log
+wandb*
+
+__pycache__/
+output*/
+data/
+wandb/
+
+*.png
+*.pdf
+*.pth
+*.pt
