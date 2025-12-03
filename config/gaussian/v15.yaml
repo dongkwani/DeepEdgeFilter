@@ -1,0 +1,4 @@
+MODEL:
+  FILTER:
+    MODE: gaussian
+    KERNEL: 15

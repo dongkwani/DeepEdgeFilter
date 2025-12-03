@@ -1,0 +1,6 @@
+MODEL:
+  FILTER:
+    KERNEL: 3
+OPTIM:
+  LR: 5e-5
+  LAMBDA_L1: 5e-7

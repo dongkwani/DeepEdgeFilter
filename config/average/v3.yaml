@@ -1,0 +1,4 @@
+MODEL:
+  FILTER:
+    MODE: average
+    KERNEL: 3
