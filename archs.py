@@ -4,6 +4,7 @@ import torch.nn.init as init
 import torch.nn.functional as F
 
 from robustbench.model_zoo.architectures.wide_resnet import WideResNet
+from robustbench.model_zoo.architectures.resnet import BasicBlock, Bottleneck, ResNet
 from torchvision.models import vit_b_32, ViT_B_32_Weights
 
 class WRN_28_10(WideResNet):
@@ -13,6 +14,14 @@ class WRN_28_10(WideResNet):
 class WRN_40_2(WideResNet):
     def __init__(self, num_classes):
         super().__init__(depth=40, widen_factor=2, num_classes=num_classes)
+
+class ResNet18(ResNet):
+    def __init__(self, num_classes):
+        super().__init__(BasicBlock, [2, 2, 2, 2], num_classes=num_classes)
+
+class ResNet50(ResNet):
+    def __init__(self, num_classes):
+        super().__init__(Bottleneck, [3, 4, 6, 3], num_classes=num_classes)
 
 class ViT_B32(nn.Module):
     def __init__(self, num_classes):

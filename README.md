@@ -12,25 +12,25 @@ pip install -r requirements.txt
 ```
 
 ## Dataset Preperation
-Prepare the clean datasets CIFAR-10, CIFAR-100, and ImageNet, along with their corresponding corrupted datasets CIFAR-10C, CIFAR-100C, and ImageNet-C. Even if you wish to experiment with only some datasets, the clean and corrupted datasets must be prepared in pairs. You can specify the root folder where the datasets are stored using the ‘--root’ argument. The experiment proceeds in the following order: the model is first trained on the clean dataset, and then the trained model is used to measure TTA accuracy on the corrupted dataset.
+Prepare the clean datasets CIFAR-10, CIFAR-100, and ImageNet200, along with their corresponding corrupted datasets CIFAR-10C, CIFAR-100C, and ImageNet200-C. Even if you wish to experiment with only some datasets, the clean and corrupted datasets must be prepared in pairs. You can specify the root folder where the datasets are stored using the ‘--root’ argument. ImageNet200 is a subset of the original ImageNet, randomly selected 200 classes. ImageNet200 and its corrupted version should be stored in the ‘imagenet200’ and ‘imagenet200-C’ subfolders of the root folder, respectively. The reason for using a subset rather than the full ImageNet is that the evaluation against full ImageNet can be considered as chaeting since we user ImageNet pretrained weights in ViT experiments.
+
+The experiment proceeds in the following order: the model is first trained on the clean dataset, and then the trained model is used to measure TTA accuracy on the corrupted dataset.
 
 ## Run the Code
 
 ```
 # WRN backbone
-python main.py --dataset cifar100 --arch WRN-28-10 --mode average --pos 1 --config config/average/v11.yaml
+python main.py --dataset cifar10 --arch WRN-28-10 --mode average --pos 1 --config config/average/v11.yaml
 
 # ViT backbone
-python main.py --dataset ImageNet --arch ViT-B32 --mode average --pos 11 --config config/average/vit_v7.yaml
+python main.py --dataset cifar100 --arch ViT-B32 --mode average --pos 11 --config config/average/vit_v7.yaml
 ```
 You can also run WRN and ViT experiments through `wrn.sh` and `vit.sh`.
+The dataset `imageNet200` only runs on the ResNet18 and ViT backbone, not on the WRN. Please refer to the `imageNet200.sh` file.
 
 For the **arch** argument, which refers to the model architecture, WRN-28-10, WRN-40-2 and ViT-B32 options are available.
-
 The **mode** argument refers to the the filter type. you can choose between none, average, median, gaussian, and average_LOW. Average here means mean filter.
-
 The **pos** argument referes to the filter position. The filter will be attached right after the layer corresponding to the number you select. You can choose between 0~3 for the WRN backbone, and between 0~11 for the ViT backbone.
-
 The **config** argument links to a YAML file containing various parameters required for the experiment. It primarily handles the filter kernel size and learning rate. The number in the config file indicates the filter kernel size.
 
 ## Citation

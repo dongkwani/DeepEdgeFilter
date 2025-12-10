@@ -1,4 +1,4 @@
-DATASET=cifar10 # cifar100, imageNet
+DATASET=cifar10 # cifar100
 MODE=average # none, median
 LAYER=1
 CONFIG=v11

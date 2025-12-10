@@ -202,6 +202,45 @@ class EdgeWRN(nn.Module):
             return self.fc(out), features
         return self.fc(out)
 
+class EdgeResNet(nn.Module):
+    def __init__(self, cfg, base_model):
+        super().__init__()
+        assert cfg.MODEL.FILTER.POSITION in [0, 1, 2, 3, 4]
+
+        self.conv1 = base_model.conv1
+        self.bn1 = base_model.bn1
+        self.layer1 = base_model.layer1
+        self.layer2 = base_model.layer2
+        self.layer3 = base_model.layer3
+        self.layer4 = base_model.layer4
+        self.avgpool = base_model.avgpool
+        self.linear = base_model.linear
+
+        self.position = cfg.MODEL.FILTER.POSITION
+        self.filter = FilterBase(cfg, cfg.MODEL.FILTER.MODE, cfg.MODEL.FILTER.POSITION)
+
+    def forward(self, x):
+        out = x
+        layers = [
+            self.conv1,
+            self.layer1,
+            self.layer2,
+            self.layer3,
+            self.layer4
+        ]
+
+        for i, layer in enumerate(layers):
+            out = layer(out)
+            if i == self.position:
+                out = self.filter(out)
+            if i==0:
+                out = F.relu(self.bn1(out))
+
+        out = self.avgpool(out)
+        out = out.view(out.size(0), -1)
+        out = self.linear(out)
+        return out
+
 
 #########################
 ####    ViT Filter   ####

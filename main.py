@@ -12,7 +12,7 @@ import numpy as np
 import random
 from collections import defaultdict
 
-from robustbench.data import load_cifar10c, load_cifar100c, load_imagenetc
+from robustbench.data import load_cifar10c, load_cifar100c, load_imagenet200c
 from robustbench.utils import clean_accuracy as accuracy
 
 from conf import _C as cfg_default
@@ -250,8 +250,8 @@ class Trainer():
                     x_test, y_test = load_cifar10c(cfg.TTA.CORRUPTION.NUM_EX, severity, cfg.DATA.ROOT, True, [corruption_type])
                 elif self.cfg.DATA.DATASET == 'cifar100':
                     x_test, y_test = load_cifar100c(cfg.TTA.CORRUPTION.NUM_EX, severity, cfg.DATA.ROOT, True, [corruption_type])
-                elif self.cfg.DATA.DATASET == 'imageNet':
-                    x_test, y_test = load_imagenetc(5000, severity, cfg.DATA.ROOT, True, [corruption_type])
+                elif self.cfg.DATA.DATASET == 'imageNet200':
+                    x_test, y_test = load_imagenet200c(5000, severity, cfg.DATA.ROOT, True, [corruption_type])
                 else:
                     logger.error('Dataset not found')
                     raise NotImplementedError
@@ -406,8 +406,8 @@ def main(args):
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
 
-        num_classes=1000
-        folder = 'imagenet'
+        num_classes = 200
+        folder = 'imagenet200'
         train_dataset = datasets.ImageNet(root=os.path.join(cfg.DATA.ROOT, folder), split='train', transform=transform_train)
         trainloader = torch.utils.data.DataLoader(train_dataset, batch_size=cfg.TRAIN.BATCH_SIZE, shuffle=True, num_workers=8)
         test_dataset = datasets.ImageNet(root=os.path.join(cfg.DATA.ROOT, folder), split='val', transform=transform_test)
@@ -438,7 +438,10 @@ def main(args):
     # Add Filter
     if cfg.MODEL.ARCH in ['WRN-28-10', 'WRN-40-2']:
         model = edgeFilter.EdgeWRN(cfg, base_model).to(device)
-        LAYER_NAMES = ['conv1','block1','block2','block3']    
+        LAYER_NAMES = ['conv1','block1','block2','block3']
+    elif cfg.MODEL.ARCH in ['ResNet18', 'ResNet50']:
+        model = edgeFilter.EdgeResNet(cfg, base_model).to(device)
+        LAYER_NAMES = ['bn1', 'layer1', 'layer2', 'layer3', 'layer4']
     elif cfg.MODEL.ARCH in ['ViT-B32', 'ViT-B16']:
         model = edgeFilter.EdgeViT(cfg, base_model).to(device)
         LAYER_NAMES = []
